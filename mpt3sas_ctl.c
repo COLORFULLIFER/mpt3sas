@@ -3797,9 +3797,9 @@ enable_sdev_max_qd_store(struct device *cdev,
 
 			if (sas_target_priv_data->flags &
 			    MPT_TARGET_FLAGS_VOLUME) {
-				raid_device =
-				    mpt3sas_raid_device_find_by_handle(ioc,
-				    sas_target_priv_data->handle);
+				// raid_device =
+				//     mpt3sas_raid_device_find_by_handle(ioc,
+				//     sas_target_priv_data->handle);
 
 				switch (raid_device->volume_type) {
 				case MPI2_RAID_VOL_TYPE_RAID0:

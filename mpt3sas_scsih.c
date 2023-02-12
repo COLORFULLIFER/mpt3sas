@@ -1419,32 +1419,32 @@ _scsih_pcie_device_init_add(struct MPT3SAS_ADAPTER *ioc,
 		_scsih_determine_boot_device(ioc, pcie_device, PCIE_CHANNEL);
 	spin_unlock_irqrestore(&ioc->pcie_device_lock, flags);
 }
-/**
- * _scsih_raid_device_find_by_id - raid device search
- * @ioc: per adapter object
- * @id: sas device target id
- * @channel: sas device channel
- * Context: Calling function should acquire ioc->raid_device_lock
- *
- * This searches for raid_device based on target id, then return raid_device
- * object.
- */
-static struct _raid_device *
-_scsih_raid_device_find_by_id(struct MPT3SAS_ADAPTER *ioc, int id, int channel)
-{
-	struct _raid_device *raid_device, *r;
+// /**
+//  * _scsih_raid_device_find_by_id - raid device search
+//  * @ioc: per adapter object
+//  * @id: sas device target id
+//  * @channel: sas device channel
+//  * Context: Calling function should acquire ioc->raid_device_lock
+//  *
+//  * This searches for raid_device based on target id, then return raid_device
+//  * object.
+//  */
+// static struct _raid_device *
+// _scsih_raid_device_find_by_id(struct MPT3SAS_ADAPTER *ioc, int id, int channel)
+// {
+// 	struct _raid_device *raid_device, *r;
 
-	r = NULL;
-	list_for_each_entry(raid_device, &ioc->raid_device_list, list) {
-		if (raid_device->id == id && raid_device->channel == channel) {
-			r = raid_device;
-			goto out;
-		}
-	}
+// 	r = NULL;
+// 	list_for_each_entry(raid_device, &ioc->raid_device_list, list) {
+// 		if (raid_device->id == id && raid_device->channel == channel) {
+// 			r = raid_device;
+// 			goto out;
+// 		}
+// 	}
 
- out:
-	return r;
-}
+//  out:
+// 	return r;
+// }
 
 /**
  * mpt3sas_raid_device_find_by_handle - raid device search
@@ -1455,22 +1455,22 @@ _scsih_raid_device_find_by_id(struct MPT3SAS_ADAPTER *ioc, int id, int channel)
  * This searches for raid_device based on handle, then return raid_device
  * object.
  */
-struct _raid_device *
-mpt3sas_raid_device_find_by_handle(struct MPT3SAS_ADAPTER *ioc, u16 handle)
-{
-	struct _raid_device *raid_device, *r;
+// struct _raid_device *
+// mpt3sas_raid_device_find_by_handle(struct MPT3SAS_ADAPTER *ioc, u16 handle)
+// {
+// 	struct _raid_device *raid_device, *r;
 
-	r = NULL;
-	list_for_each_entry(raid_device, &ioc->raid_device_list, list) {
-		if (raid_device->handle != handle)
-			continue;
-		r = raid_device;
-		goto out;
-	}
+// 	r = NULL;
+// 	list_for_each_entry(raid_device, &ioc->raid_device_list, list) {
+// 		if (raid_device->handle != handle)
+// 			continue;
+// 		r = raid_device;
+// 		goto out;
+// 	}
 
- out:
-	return r;
-}
+//  out:
+// 	return r;
+// }
 
 /**
  * _scsih_raid_device_find_by_wwid - raid device search
@@ -1887,21 +1887,21 @@ scsih_target_alloc(struct scsi_target *starget)
 	sas_target_priv_data->handle = MPT3SAS_INVALID_DEVICE_HANDLE;
 
 	/* RAID volumes */
-	if (starget->channel == RAID_CHANNEL) {
-		spin_lock_irqsave(&ioc->raid_device_lock, flags);
-		raid_device = _scsih_raid_device_find_by_id(ioc, starget->id,
-		    starget->channel);
-		if (raid_device) {
-			sas_target_priv_data->handle = raid_device->handle;
-			sas_target_priv_data->sas_address = raid_device->wwid;
-			sas_target_priv_data->flags |= MPT_TARGET_FLAGS_VOLUME;
-			if (ioc->is_warpdrive)
-				sas_target_priv_data->raid_device = raid_device;
-			raid_device->starget = starget;
-		}
-		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
-		return 0;
-	}
+	// if (starget->channel == RAID_CHANNEL) {
+	// 	spin_lock_irqsave(&ioc->raid_device_lock, flags);
+	// 	raid_device = _scsih_raid_device_find_by_id(ioc, starget->id,
+	// 	    starget->channel);
+	// 	if (raid_device) {
+	// 		sas_target_priv_data->handle = raid_device->handle;
+	// 		sas_target_priv_data->sas_address = raid_device->wwid;
+	// 		sas_target_priv_data->flags |= MPT_TARGET_FLAGS_VOLUME;
+	// 		if (ioc->is_warpdrive)
+	// 			sas_target_priv_data->raid_device = raid_device;
+	// 		raid_device->starget = starget;
+	// 	}
+	// 	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
+	// 	return 0;
+	// }
 
 	/* PCIe devices */
 	if (starget->channel == PCIE_CHANNEL) {
@@ -1970,17 +1970,17 @@ scsih_target_destroy(struct scsi_target *starget)
 	if (!sas_target_priv_data)
 		return;
 
-	if (starget->channel == RAID_CHANNEL) {
-		spin_lock_irqsave(&ioc->raid_device_lock, flags);
-		raid_device = _scsih_raid_device_find_by_id(ioc, starget->id,
-		    starget->channel);
-		if (raid_device) {
-			raid_device->starget = NULL;
-			raid_device->sdev = NULL;
-		}
-		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
-		goto out;
-	}
+	// if (starget->channel == RAID_CHANNEL) {
+	// 	spin_lock_irqsave(&ioc->raid_device_lock, flags);
+	// 	raid_device = _scsih_raid_device_find_by_id(ioc, starget->id,
+	// 	    starget->channel);
+	// 	if (raid_device) {
+	// 		raid_device->starget = NULL;
+	// 		raid_device->sdev = NULL;
+	// 	}
+	// 	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
+	// 	goto out;
+	// }
 
 	if (starget->channel == PCIE_CHANNEL) {
 		spin_lock_irqsave(&ioc->pcie_device_lock, flags);
@@ -2064,14 +2064,14 @@ scsih_slave_alloc(struct scsi_device *sdev)
 
 	shost = dev_to_shost(&starget->dev);
 	ioc = shost_priv(shost);
-	if (starget->channel == RAID_CHANNEL) {
-		spin_lock_irqsave(&ioc->raid_device_lock, flags);
-		raid_device = _scsih_raid_device_find_by_id(ioc,
-		    starget->id, starget->channel);
-		if (raid_device)
-			raid_device->sdev = sdev; /* raid is single lun */
-		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
-	}
+	// if (starget->channel == RAID_CHANNEL) {
+	// 	spin_lock_irqsave(&ioc->raid_device_lock, flags);
+	// 	raid_device = _scsih_raid_device_find_by_id(ioc,
+	// 	    starget->id, starget->channel);
+	// 	if (raid_device)
+	// 		raid_device->sdev = sdev; /* raid is single lun */
+	// 	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
+	// }
 	if (starget->channel == PCIE_CHANNEL) {
 		spin_lock_irqsave(&ioc->pcie_device_lock, flags);
 		pcie_device = __mpt3sas_get_pdev_by_wwid(ioc,
@@ -2241,128 +2241,128 @@ scsih_is_nvme(struct device *dev)
  * scsih_get_resync - get raid volume resync percent complete
  * @dev: the device struct object
  */
-static void
-scsih_get_resync(struct device *dev)
-{
-	struct scsi_device *sdev = to_scsi_device(dev);
-	struct MPT3SAS_ADAPTER *ioc = shost_priv(sdev->host);
-	static struct _raid_device *raid_device;
-	unsigned long flags;
-	Mpi2RaidVolPage0_t vol_pg0;
-	Mpi2ConfigReply_t mpi_reply;
-	u32 volume_status_flags;
-	u8 percent_complete;
-	u16 handle;
+// static void
+// scsih_get_resync(struct device *dev)
+// {
+// 	struct scsi_device *sdev = to_scsi_device(dev);
+// 	struct MPT3SAS_ADAPTER *ioc = shost_priv(sdev->host);
+// 	static struct _raid_device *raid_device;
+// 	unsigned long flags;
+// 	Mpi2RaidVolPage0_t vol_pg0;
+// 	Mpi2ConfigReply_t mpi_reply;
+// 	u32 volume_status_flags;
+// 	u8 percent_complete;
+// 	u16 handle;
 
-	percent_complete = 0;
-	handle = 0;
-	if (ioc->is_warpdrive)
-		goto out;
+// 	percent_complete = 0;
+// 	handle = 0;
+// 	if (ioc->is_warpdrive)
+// 		goto out;
 
-	spin_lock_irqsave(&ioc->raid_device_lock, flags);
-	raid_device = _scsih_raid_device_find_by_id(ioc, sdev->id,
-	    sdev->channel);
-	if (raid_device) {
-		handle = raid_device->handle;
-		percent_complete = raid_device->percent_complete;
-	}
-	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
+// 	spin_lock_irqsave(&ioc->raid_device_lock, flags);
+// 	// raid_device = _scsih_raid_device_find_by_id(ioc, sdev->id,
+// 	//     sdev->channel);
+// 	// if (raid_device) {
+// 	// 	handle = raid_device->handle;
+// 	// 	percent_complete = raid_device->percent_complete;
+// 	// }
+// 	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
 
-	if (!handle)
-		goto out;
+// 	if (!handle)
+// 		goto out;
 
-	if (mpt3sas_config_get_raid_volume_pg0(ioc, &mpi_reply, &vol_pg0,
-	     MPI2_RAID_VOLUME_PGAD_FORM_HANDLE, handle,
-	     sizeof(Mpi2RaidVolPage0_t))) {
-		ioc_err(ioc, "failure at %s:%d/%s()!\n",
-			__FILE__, __LINE__, __func__);
-		percent_complete = 0;
-		goto out;
-	}
+// 	if (mpt3sas_config_get_raid_volume_pg0(ioc, &mpi_reply, &vol_pg0,
+// 	     MPI2_RAID_VOLUME_PGAD_FORM_HANDLE, handle,
+// 	     sizeof(Mpi2RaidVolPage0_t))) {
+// 		ioc_err(ioc, "failure at %s:%d/%s()!\n",
+// 			__FILE__, __LINE__, __func__);
+// 		percent_complete = 0;
+// 		goto out;
+// 	}
 
-	volume_status_flags = le32_to_cpu(vol_pg0.VolumeStatusFlags);
-	if (!(volume_status_flags &
-	    MPI2_RAIDVOL0_STATUS_FLAG_RESYNC_IN_PROGRESS))
-		percent_complete = 0;
+// 	volume_status_flags = le32_to_cpu(vol_pg0.VolumeStatusFlags);
+// 	if (!(volume_status_flags &
+// 	    MPI2_RAIDVOL0_STATUS_FLAG_RESYNC_IN_PROGRESS))
+// 		percent_complete = 0;
 
- out:
+//  out:
 
-	switch (ioc->hba_mpi_version_belonged) {
-	case MPI2_VERSION:
-		raid_set_resync(mpt2sas_raid_template, dev, percent_complete);
-		break;
-	case MPI25_VERSION:
-	case MPI26_VERSION:
-		raid_set_resync(mpt3sas_raid_template, dev, percent_complete);
-		break;
-	}
-}
+// 	switch (ioc->hba_mpi_version_belonged) {
+// 	case MPI2_VERSION:
+// 		raid_set_resync(mpt2sas_raid_template, dev, percent_complete);
+// 		break;
+// 	case MPI25_VERSION:
+// 	case MPI26_VERSION:
+// 		raid_set_resync(mpt3sas_raid_template, dev, percent_complete);
+// 		break;
+// 	}
+// }
 
 /**
  * scsih_get_state - get raid volume level
  * @dev: the device struct object
  */
-static void
-scsih_get_state(struct device *dev)
-{
-	struct scsi_device *sdev = to_scsi_device(dev);
-	struct MPT3SAS_ADAPTER *ioc = shost_priv(sdev->host);
-	static struct _raid_device *raid_device;
-	unsigned long flags;
-	Mpi2RaidVolPage0_t vol_pg0;
-	Mpi2ConfigReply_t mpi_reply;
-	u32 volstate;
-	enum raid_state state = RAID_STATE_UNKNOWN;
-	u16 handle = 0;
+// static void
+// scsih_get_state(struct device *dev)
+// {
+// 	struct scsi_device *sdev = to_scsi_device(dev);
+// 	struct MPT3SAS_ADAPTER *ioc = shost_priv(sdev->host);
+// 	static struct _raid_device *raid_device;
+// 	unsigned long flags;
+// 	Mpi2RaidVolPage0_t vol_pg0;
+// 	Mpi2ConfigReply_t mpi_reply;
+// 	u32 volstate;
+// 	enum raid_state state = RAID_STATE_UNKNOWN;
+// 	u16 handle = 0;
 
-	spin_lock_irqsave(&ioc->raid_device_lock, flags);
-	raid_device = _scsih_raid_device_find_by_id(ioc, sdev->id,
-	    sdev->channel);
-	if (raid_device)
-		handle = raid_device->handle;
-	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
+// 	spin_lock_irqsave(&ioc->raid_device_lock, flags);
+// 	raid_device = _scsih_raid_device_find_by_id(ioc, sdev->id,
+// 	    sdev->channel);
+// 	if (raid_device)
+// 		handle = raid_device->handle;
+// 	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
 
-	if (!raid_device)
-		goto out;
+// 	if (!raid_device)
+// 		goto out;
 
-	if (mpt3sas_config_get_raid_volume_pg0(ioc, &mpi_reply, &vol_pg0,
-	     MPI2_RAID_VOLUME_PGAD_FORM_HANDLE, handle,
-	     sizeof(Mpi2RaidVolPage0_t))) {
-		ioc_err(ioc, "failure at %s:%d/%s()!\n",
-			__FILE__, __LINE__, __func__);
-		goto out;
-	}
+// 	if (mpt3sas_config_get_raid_volume_pg0(ioc, &mpi_reply, &vol_pg0,
+// 	     MPI2_RAID_VOLUME_PGAD_FORM_HANDLE, handle,
+// 	     sizeof(Mpi2RaidVolPage0_t))) {
+// 		ioc_err(ioc, "failure at %s:%d/%s()!\n",
+// 			__FILE__, __LINE__, __func__);
+// 		goto out;
+// 	}
 
-	volstate = le32_to_cpu(vol_pg0.VolumeStatusFlags);
-	if (volstate & MPI2_RAIDVOL0_STATUS_FLAG_RESYNC_IN_PROGRESS) {
-		state = RAID_STATE_RESYNCING;
-		goto out;
-	}
+// 	volstate = le32_to_cpu(vol_pg0.VolumeStatusFlags);
+// 	if (volstate & MPI2_RAIDVOL0_STATUS_FLAG_RESYNC_IN_PROGRESS) {
+// 		state = RAID_STATE_RESYNCING;
+// 		goto out;
+// 	}
 
-	switch (vol_pg0.VolumeState) {
-	case MPI2_RAID_VOL_STATE_OPTIMAL:
-	case MPI2_RAID_VOL_STATE_ONLINE:
-		state = RAID_STATE_ACTIVE;
-		break;
-	case  MPI2_RAID_VOL_STATE_DEGRADED:
-		state = RAID_STATE_DEGRADED;
-		break;
-	case MPI2_RAID_VOL_STATE_FAILED:
-	case MPI2_RAID_VOL_STATE_MISSING:
-		state = RAID_STATE_OFFLINE;
-		break;
-	}
- out:
-	switch (ioc->hba_mpi_version_belonged) {
-	case MPI2_VERSION:
-		raid_set_state(mpt2sas_raid_template, dev, state);
-		break;
-	case MPI25_VERSION:
-	case MPI26_VERSION:
-		raid_set_state(mpt3sas_raid_template, dev, state);
-		break;
-	}
-}
+// 	switch (vol_pg0.VolumeState) {
+// 	case MPI2_RAID_VOL_STATE_OPTIMAL:
+// 	case MPI2_RAID_VOL_STATE_ONLINE:
+// 		state = RAID_STATE_ACTIVE;
+// 		break;
+// 	case  MPI2_RAID_VOL_STATE_DEGRADED:
+// 		state = RAID_STATE_DEGRADED;
+// 		break;
+// 	case MPI2_RAID_VOL_STATE_FAILED:
+// 	case MPI2_RAID_VOL_STATE_MISSING:
+// 		state = RAID_STATE_OFFLINE;
+// 		break;
+// 	}
+//  out:
+// 	switch (ioc->hba_mpi_version_belonged) {
+// 	case MPI2_VERSION:
+// 		raid_set_state(mpt2sas_raid_template, dev, state);
+// 		break;
+// 	case MPI25_VERSION:
+// 	case MPI26_VERSION:
+// 		raid_set_state(mpt3sas_raid_template, dev, state);
+// 		break;
+// 	}
+// }
 
 /**
  * _scsih_set_level - set raid level
@@ -2531,100 +2531,100 @@ scsih_slave_configure(struct scsi_device *sdev)
 	handle = sas_target_priv_data->handle;
 
 	/* raid volume handling */
-	if (sas_target_priv_data->flags & MPT_TARGET_FLAGS_VOLUME) {
+// 	if (sas_target_priv_data->flags & MPT_TARGET_FLAGS_VOLUME) {
 
-		spin_lock_irqsave(&ioc->raid_device_lock, flags);
-		raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
-		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
-		if (!raid_device) {
-			dfailprintk(ioc,
-				    ioc_warn(ioc, "failure at %s:%d/%s()!\n",
-					     __FILE__, __LINE__, __func__));
-			return 1;
-		}
+// 		spin_lock_irqsave(&ioc->raid_device_lock, flags);
+// 		raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
+// 		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
+// 		if (!raid_device) {
+// 			dfailprintk(ioc,
+// 				    ioc_warn(ioc, "failure at %s:%d/%s()!\n",
+// 					     __FILE__, __LINE__, __func__));
+// 			return 1;
+// 		}
 
-		if (_scsih_get_volume_capabilities(ioc, raid_device)) {
-			dfailprintk(ioc,
-				    ioc_warn(ioc, "failure at %s:%d/%s()!\n",
-					     __FILE__, __LINE__, __func__));
-			return 1;
-		}
+// 		if (_scsih_get_volume_capabilities(ioc, raid_device)) {
+// 			dfailprintk(ioc,
+// 				    ioc_warn(ioc, "failure at %s:%d/%s()!\n",
+// 					     __FILE__, __LINE__, __func__));
+// 			return 1;
+// 		}
 
-		/*
-		 * WARPDRIVE: Initialize the required data for Direct IO
-		 */
-//标记		mpt3sas_init_warpdrive_properties(ioc, raid_device);
+// 		/*
+// 		 * WARPDRIVE: Initialize the required data for Direct IO
+// 		 */
+// //标记		mpt3sas_init_warpdrive_properties(ioc, raid_device);
 
-		/* RAID Queue Depth Support
-		 * IS volume = underlying qdepth of drive type, either
-		 *    MPT3SAS_SAS_QUEUE_DEPTH or MPT3SAS_SATA_QUEUE_DEPTH
-		 * IM/IME/R10 = 128 (MPT3SAS_RAID_QUEUE_DEPTH)
-		 */
-		if (raid_device->device_info &
-		    MPI2_SAS_DEVICE_INFO_SSP_TARGET) {
-			qdepth = MPT3SAS_SAS_QUEUE_DEPTH;
-			ds = "SSP";
-		} else {
-			qdepth = MPT3SAS_SATA_QUEUE_DEPTH;
-			if (raid_device->device_info &
-			    MPI2_SAS_DEVICE_INFO_SATA_DEVICE)
-				ds = "SATA";
-			else
-				ds = "STP";
-		}
+// 		/* RAID Queue Depth Support
+// 		 * IS volume = underlying qdepth of drive type, either
+// 		 *    MPT3SAS_SAS_QUEUE_DEPTH or MPT3SAS_SATA_QUEUE_DEPTH
+// 		 * IM/IME/R10 = 128 (MPT3SAS_RAID_QUEUE_DEPTH)
+// 		 */
+// 		if (raid_device->device_info &
+// 		    MPI2_SAS_DEVICE_INFO_SSP_TARGET) {
+// 			qdepth = MPT3SAS_SAS_QUEUE_DEPTH;
+// 			ds = "SSP";
+// 		} else {
+// 			qdepth = MPT3SAS_SATA_QUEUE_DEPTH;
+// 			if (raid_device->device_info &
+// 			    MPI2_SAS_DEVICE_INFO_SATA_DEVICE)
+// 				ds = "SATA";
+// 			else
+// 				ds = "STP";
+// 		}
 
-		switch (raid_device->volume_type) {
-		case MPI2_RAID_VOL_TYPE_RAID0:
-			r_level = "RAID0";
-			break;
-		case MPI2_RAID_VOL_TYPE_RAID1E:
-			qdepth = MPT3SAS_RAID_QUEUE_DEPTH;
-			if (ioc->manu_pg10.OEMIdentifier &&
-			    (le32_to_cpu(ioc->manu_pg10.GenericFlags0) &
-			    MFG10_GF0_R10_DISPLAY) &&
-			    !(raid_device->num_pds % 2))
-				r_level = "RAID10";
-			else
-				r_level = "RAID1E";
-			break;
-		case MPI2_RAID_VOL_TYPE_RAID1:
-			qdepth = MPT3SAS_RAID_QUEUE_DEPTH;
-			r_level = "RAID1";
-			break;
-		case MPI2_RAID_VOL_TYPE_RAID10:
-			qdepth = MPT3SAS_RAID_QUEUE_DEPTH;
-			r_level = "RAID10";
-			break;
-		case MPI2_RAID_VOL_TYPE_UNKNOWN:
-		default:
-			qdepth = MPT3SAS_RAID_QUEUE_DEPTH;
-			r_level = "RAIDX";
-			break;
-		}
+// 		switch (raid_device->volume_type) {
+// 		case MPI2_RAID_VOL_TYPE_RAID0:
+// 			r_level = "RAID0";
+// 			break;
+// 		case MPI2_RAID_VOL_TYPE_RAID1E:
+// 			qdepth = MPT3SAS_RAID_QUEUE_DEPTH;
+// 			if (ioc->manu_pg10.OEMIdentifier &&
+// 			    (le32_to_cpu(ioc->manu_pg10.GenericFlags0) &
+// 			    MFG10_GF0_R10_DISPLAY) &&
+// 			    !(raid_device->num_pds % 2))
+// 				r_level = "RAID10";
+// 			else
+// 				r_level = "RAID1E";
+// 			break;
+// 		case MPI2_RAID_VOL_TYPE_RAID1:
+// 			qdepth = MPT3SAS_RAID_QUEUE_DEPTH;
+// 			r_level = "RAID1";
+// 			break;
+// 		case MPI2_RAID_VOL_TYPE_RAID10:
+// 			qdepth = MPT3SAS_RAID_QUEUE_DEPTH;
+// 			r_level = "RAID10";
+// 			break;
+// 		case MPI2_RAID_VOL_TYPE_UNKNOWN:
+// 		default:
+// 			qdepth = MPT3SAS_RAID_QUEUE_DEPTH;
+// 			r_level = "RAIDX";
+// 			break;
+// 		}
 
-		if (!ioc->hide_ir_msg)
-			sdev_printk(KERN_INFO, sdev,
-			   "%s: handle(0x%04x), wwid(0x%016llx),"
-			    " pd_count(%d), type(%s)\n",
-			    r_level, raid_device->handle,
-			    (unsigned long long)raid_device->wwid,
-			    raid_device->num_pds, ds);
+// 		if (!ioc->hide_ir_msg)
+// 			sdev_printk(KERN_INFO, sdev,
+// 			   "%s: handle(0x%04x), wwid(0x%016llx),"
+// 			    " pd_count(%d), type(%s)\n",
+// 			    r_level, raid_device->handle,
+// 			    (unsigned long long)raid_device->wwid,
+// 			    raid_device->num_pds, ds);
 
-		if (shost->max_sectors > MPT3SAS_RAID_MAX_SECTORS) {
-			blk_queue_max_hw_sectors(sdev->request_queue,
-						MPT3SAS_RAID_MAX_SECTORS);
-			sdev_printk(KERN_INFO, sdev,
-					"Set queue's max_sector to: %u\n",
-						MPT3SAS_RAID_MAX_SECTORS);
-		}
+// 		if (shost->max_sectors > MPT3SAS_RAID_MAX_SECTORS) {
+// 			blk_queue_max_hw_sectors(sdev->request_queue,
+// 						MPT3SAS_RAID_MAX_SECTORS);
+// 			sdev_printk(KERN_INFO, sdev,
+// 					"Set queue's max_sector to: %u\n",
+// 						MPT3SAS_RAID_MAX_SECTORS);
+// 		}
 
-		mpt3sas_scsih_change_queue_depth(sdev, qdepth);
+// 		mpt3sas_scsih_change_queue_depth(sdev, qdepth);
 
-		/* raid transport support */
-		if (!ioc->is_warpdrive)
-			_scsih_set_level(ioc, sdev, raid_device->volume_type);
-		return 0;
-	}
+// 		/* raid transport support */
+// 		if (!ioc->is_warpdrive)
+// 			_scsih_set_level(ioc, sdev, raid_device->volume_type);
+// 		return 0;
+// 	}
 
 	/* non-raid handling */
 	if (sas_target_priv_data->flags & MPT_TARGET_FLAGS_RAID_COMPONENT) {
@@ -4809,16 +4809,16 @@ _scsih_set_volume_delete_flag(struct MPT3SAS_ADAPTER *ioc, u16 handle)
 	unsigned long flags;
 
 	spin_lock_irqsave(&ioc->raid_device_lock, flags);
-	raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
-	if (raid_device && raid_device->starget &&
-	    raid_device->starget->hostdata) {
-		sas_target_priv_data =
-		    raid_device->starget->hostdata;
-		sas_target_priv_data->deleted = 1;
-		dewtprintk(ioc,
-			   ioc_info(ioc, "setting delete flag: handle(0x%04x), wwid(0x%016llx)\n",
-				    handle, (u64)raid_device->wwid));
-	}
+	// raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
+	// if (raid_device && raid_device->starget &&
+	//     raid_device->starget->hostdata) {
+	// 	sas_target_priv_data =
+	// 	    raid_device->starget->hostdata;
+	// 	sas_target_priv_data->deleted = 1;
+	// 	dewtprintk(ioc,
+	// 		   ioc_info(ioc, "setting delete flag: handle(0x%04x), wwid(0x%016llx)\n",
+	// 			    handle, (u64)raid_device->wwid));
+	// }
 	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
 }
 
@@ -9010,18 +9010,18 @@ _scsih_sas_volume_delete(struct MPT3SAS_ADAPTER *ioc, u16 handle)
 	struct scsi_target *starget = NULL;
 
 	spin_lock_irqsave(&ioc->raid_device_lock, flags);
-	raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
-	if (raid_device) {
-		if (raid_device->starget) {
-			starget = raid_device->starget;
-			sas_target_priv_data = starget->hostdata;
-			sas_target_priv_data->deleted = 1;
-		}
-		ioc_info(ioc, "removing handle(0x%04x), wwid(0x%016llx)\n",
-			 raid_device->handle, (u64)raid_device->wwid);
-		list_del(&raid_device->list);
-		kfree(raid_device);
-	}
+	// raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
+	// if (raid_device) {
+	// 	if (raid_device->starget) {
+	// 		starget = raid_device->starget;
+	// 		sas_target_priv_data = starget->hostdata;
+	// 		sas_target_priv_data->deleted = 1;
+	// 	}
+	// 	ioc_info(ioc, "removing handle(0x%04x), wwid(0x%016llx)\n",
+	// 		 raid_device->handle, (u64)raid_device->wwid);
+	// 	list_del(&raid_device->list);
+	// 	kfree(raid_device);
+	// }
 	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
 	if (starget)
 		scsi_remove_target(&starget->dev);
@@ -9376,7 +9376,7 @@ _scsih_sas_ir_volume_event(struct MPT3SAS_ADAPTER *ioc,
 	case MPI2_RAID_VOL_STATE_OPTIMAL:
 
 		spin_lock_irqsave(&ioc->raid_device_lock, flags);
-		raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
+	//	raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
 		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
 
 		if (raid_device)
@@ -9566,7 +9566,7 @@ _scsih_sas_ir_operation_status_event(struct MPT3SAS_ADAPTER *ioc,
 
 		spin_lock_irqsave(&ioc->raid_device_lock, flags);
 		handle = le16_to_cpu(event_data->VolDevHandle);
-		raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
+	//	raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
 		if (raid_device)
 			raid_device->percent_complete =
 			    event_data->PercentComplete;
@@ -11445,28 +11445,28 @@ _scsih_probe_boot_devices(struct MPT3SAS_ADAPTER *ioc)
 	}
 }
 
-/**
- * _scsih_probe_raid - reporting raid volumes to scsi-ml
- * @ioc: per adapter object
- *
- * Called during initial loading of the driver.
- */
-static void
-_scsih_probe_raid(struct MPT3SAS_ADAPTER *ioc)
-{
-	struct _raid_device *raid_device, *raid_next;
-	int rc;
+// /**
+//  * _scsih_probe_raid - reporting raid volumes to scsi-ml
+//  * @ioc: per adapter object
+//  *
+//  * Called during initial loading of the driver.
+//  */
+// static void
+// _scsih_probe_raid(struct MPT3SAS_ADAPTER *ioc)
+// {
+// 	struct _raid_device *raid_device, *raid_next;
+// 	int rc;
 
-	list_for_each_entry_safe(raid_device, raid_next,
-	    &ioc->raid_device_list, list) {
-		if (raid_device->starget)
-			continue;
-		rc = scsi_add_device(ioc->shost, RAID_CHANNEL,
-		    raid_device->id, 0);
-		if (rc)
-			_scsih_raid_device_remove(ioc, raid_device);
-	}
-}
+// 	list_for_each_entry_safe(raid_device, raid_next,
+// 	    &ioc->raid_device_list, list) {
+// 		if (raid_device->starget)
+// 			continue;
+// 		rc = scsi_add_device(ioc->shost, RAID_CHANNEL,
+// 		    raid_device->id, 0);
+// 		if (rc)
+// 			_scsih_raid_device_remove(ioc, raid_device);
+// 	}
+// }
 
 static struct _sas_device *get_next_sas_device(struct MPT3SAS_ADAPTER *ioc)
 {
@@ -11675,11 +11675,11 @@ _scsih_probe_devices(struct MPT3SAS_ADAPTER *ioc)
 		    MPI2_IOCPAGE8_IRFLAGS_MASK_VOLUME_MAPPING_MODE;
 		if (volume_mapping_flags ==
 		    MPI2_IOCPAGE8_IRFLAGS_LOW_VOLUME_MAPPING) {
-			_scsih_probe_raid(ioc);
+		//	_scsih_probe_raid(ioc);
 			_scsih_probe_sas(ioc);
 		} else {
 			_scsih_probe_sas(ioc);
-			_scsih_probe_raid(ioc);
+		//	_scsih_probe_raid(ioc);
 		}
 	} else {
 		_scsih_probe_sas(ioc);
@@ -11888,8 +11888,8 @@ static struct scsi_host_template mpt2sas_driver_template = {
 static struct raid_function_template mpt2sas_raid_functions = {
 	.cookie		= &mpt2sas_driver_template,
 	.is_raid	= scsih_is_raid,
-	.get_resync	= scsih_get_resync,
-	.get_state	= scsih_get_state,
+	// .get_resync	= scsih_get_resync,
+	// .get_state	= scsih_get_state,
 };
 
 /* shost template for SAS 3.0 HBA devices */
@@ -11929,8 +11929,8 @@ static struct scsi_host_template mpt3sas_driver_template = {
 static struct raid_function_template mpt3sas_raid_functions = {
 	.cookie		= &mpt3sas_driver_template,
 	.is_raid	= scsih_is_raid,
-	.get_resync	= scsih_get_resync,
-	.get_state	= scsih_get_state,
+	// .get_resync	= scsih_get_resync,
+	// .get_state	= scsih_get_state,
 };
 
 /**
