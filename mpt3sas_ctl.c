@@ -1420,36 +1420,36 @@ _ctl_btdh_search_pcie_device(struct MPT3SAS_ADAPTER *ioc,
  * @ioc: per adapter object
  * @btdh: btdh ioctl payload
  */
-static int
-_ctl_btdh_search_raid_device(struct MPT3SAS_ADAPTER *ioc,
-	struct mpt3_ioctl_btdh_mapping *btdh)
-{
-	struct _raid_device *raid_device;
-	unsigned long flags;
-	int rc = 0;
+// static int
+// _ctl_btdh_search_raid_device(struct MPT3SAS_ADAPTER *ioc,
+// 	struct mpt3_ioctl_btdh_mapping *btdh)
+// {
+// 	struct _raid_device *raid_device;
+// 	unsigned long flags;
+// 	int rc = 0;
 
-	if (list_empty(&ioc->raid_device_list))
-		return rc;
+// 	if (list_empty(&ioc->raid_device_list))
+// 		return rc;
 
-	spin_lock_irqsave(&ioc->raid_device_lock, flags);
-	list_for_each_entry(raid_device, &ioc->raid_device_list, list) {
-		if (btdh->bus == 0xFFFFFFFF && btdh->id == 0xFFFFFFFF &&
-		    btdh->handle == raid_device->handle) {
-			btdh->bus = raid_device->channel;
-			btdh->id = raid_device->id;
-			rc = 1;
-			goto out;
-		} else if (btdh->bus == raid_device->channel && btdh->id ==
-		    raid_device->id && btdh->handle == 0xFFFF) {
-			btdh->handle = raid_device->handle;
-			rc = 1;
-			goto out;
-		}
-	}
- out:
-	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
-	return rc;
-}
+// 	spin_lock_irqsave(&ioc->raid_device_lock, flags);
+// 	list_for_each_entry(raid_device, &ioc->raid_device_list, list) {
+// 		if (btdh->bus == 0xFFFFFFFF && btdh->id == 0xFFFFFFFF &&
+// 		    btdh->handle == raid_device->handle) {
+// 			btdh->bus = raid_device->channel;
+// 			btdh->id = raid_device->id;
+// 			rc = 1;
+// 			goto out;
+// 		} else if (btdh->bus == raid_device->channel && btdh->id ==
+// 		    raid_device->id && btdh->handle == 0xFFFF) {
+// 			btdh->handle = raid_device->handle;
+// 			rc = 1;
+// 			goto out;
+// 		}
+// 	}
+//  out:
+// 	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
+// 	return rc;
+// }
 
 /**
  * _ctl_btdh_mapping - main handler for MPT3BTDHMAPPING opcode
@@ -1475,7 +1475,7 @@ _ctl_btdh_mapping(struct MPT3SAS_ADAPTER *ioc, void __user *arg)
 	if (!rc)
 		rc = _ctl_btdh_search_pcie_device(ioc, &karg);
 	if (!rc)
-		_ctl_btdh_search_raid_device(ioc, &karg);
+	//	_ctl_btdh_search_raid_device(ioc, &karg);
 
 	if (copy_to_user(arg, &karg, sizeof(karg))) {
 		pr_err("failure at %s:%d/%s()!\n",
