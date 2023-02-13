@@ -1024,7 +1024,7 @@ _ctl_do_mpt_command(struct MPT3SAS_ADAPTER *ioc, struct mpt3_ioctl_command karg,
 		    (Mpi2SCSITaskManagementRequest_t *)mpi_request;
 		mpt3sas_scsih_clear_tm_flag(ioc, le16_to_cpu(
 		    tm_request->DevHandle));
-		mpt3sas_trigger_master(ioc, MASTER_TRIGGER_TASK_MANAGMENT);
+	//	mpt3sas_trigger_master(ioc, MASTER_TRIGGER_TASK_MANAGMENT);
 	} else if ((mpi_request->Function == MPI2_FUNCTION_SMP_PASSTHROUGH ||
 	    mpi_request->Function == MPI2_FUNCTION_SAS_IO_UNIT_CONTROL) &&
 		ioc->ioc_link_reset_in_progress) {

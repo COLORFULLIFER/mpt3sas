@@ -3130,7 +3130,7 @@ mpt3sas_scsih_issue_tm(struct MPT3SAS_ADAPTER *ioc, u16 handle, uint channel,
 	mpt3sas_base_sync_reply_irqs(ioc, 0);
 
 	if (ioc->tm_cmds.status & MPT3_CMD_REPLY_VALID) {
-		mpt3sas_trigger_master(ioc, MASTER_TRIGGER_TASK_MANAGMENT);
+		//mpt3sas_trigger_master(ioc, MASTER_TRIGGER_TASK_MANAGMENT);
 		mpi_reply = ioc->tm_cmds.reply;
 		dtmprintk(ioc,
 			  ioc_info(ioc, "complete tm: ioc_status(0x%04x), loginfo(0x%08x), term_count(0x%08x)\n",
@@ -4192,7 +4192,7 @@ _scsih_tm_tr_send(struct MPT3SAS_ADAPTER *ioc, u16 handle)
 	mpi_request->MsgFlags = tr_method;
 	set_bit(handle, ioc->device_remove_in_progress);
 	ioc->put_smid_hi_priority(ioc, smid, 0);
-	mpt3sas_trigger_master(ioc, MASTER_TRIGGER_DEVICE_REMOVAL);
+	//mpt3sas_trigger_master(ioc, MASTER_TRIGGER_DEVICE_REMOVAL);
 
 out:
 	if (sas_device)
@@ -4258,7 +4258,7 @@ _scsih_tm_tr_complete(struct MPT3SAS_ADAPTER *ioc, u16 smid, u8 msix_index,
 		return 0;
 	}
 
-	mpt3sas_trigger_master(ioc, MASTER_TRIGGER_TASK_MANAGMENT);
+	//mpt3sas_trigger_master(ioc, MASTER_TRIGGER_TASK_MANAGMENT);
 	dewtprintk(ioc,
 		   ioc_info(ioc, "tr_complete:handle(0x%04x), (open) smid(%d), ioc_status(0x%04x), loginfo(0x%08x), completed(%d)\n",
 			    handle, smid, le16_to_cpu(mpi_reply->IOCStatus),
@@ -5789,7 +5789,7 @@ _scsih_io_done(struct MPT3SAS_ADAPTER *ioc, u16 smid, u8 msix_index, u32 reply)
 		if (data.asc == 0x5D)
 			_scsih_smart_predicted_fault(ioc,
 			    le16_to_cpu(mpi_reply->DevHandle));
-		mpt3sas_trigger_scsi(ioc, data.skey, data.asc, data.ascq);
+		//mpt3sas_trigger_scsi(ioc, data.skey, data.asc, data.ascq);
 
 		if ((ioc->logging_level & MPT_DEBUG_REPLY) &&
 		     ((scmd->sense_buffer[2] == UNIT_ATTENTION) ||
@@ -10662,11 +10662,11 @@ _mpt3sas_fw_work(struct MPT3SAS_ADAPTER *ioc, struct fw_event_work *fw_event)
 	}
 
 	switch (fw_event->event) {
-	case MPT3SAS_PROCESS_TRIGGER_DIAG:
-		mpt3sas_process_trigger_data(ioc,
-			(struct SL_WH_TRIGGERS_EVENT_DATA_T *)
-			fw_event->event_data);
-		break;
+	// case MPT3SAS_PROCESS_TRIGGER_DIAG:
+	// 	mpt3sas_process_trigger_data(ioc,
+	// 		(struct SL_WH_TRIGGERS_EVENT_DATA_T *)
+	// 		fw_event->event_data);
+	// 	break;
 	case MPT3SAS_REMOVE_UNRESPONDING_DEVICES:
 		while (scsi_host_in_recovery(ioc->shost) ||
 					 ioc->shost_recovery) {
@@ -10813,8 +10813,8 @@ mpt3sas_scsih_event_callback(struct MPT3SAS_ADAPTER *ioc, u8 msix_index,
 
 	event = le16_to_cpu(mpi_reply->Event);
 
-	if (event != MPI2_EVENT_LOG_ENTRY_ADDED)
-		mpt3sas_trigger_event(ioc, event, 0);
+	//if (event != MPI2_EVENT_LOG_ENTRY_ADDED)
+	//	mpt3sas_trigger_event(ioc, event, 0);
 
 	switch (event) {
 	/* handle these */

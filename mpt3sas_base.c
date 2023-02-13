@@ -1404,7 +1404,7 @@ _base_display_reply_info(struct MPT3SAS_ADAPTER *ioc, u16 smid, u8 msix_index,
 
 	if (ioc_status || loginfo) {
 		ioc_status &= MPI2_IOCSTATUS_MASK;
-		mpt3sas_trigger_mpi(ioc, ioc_status, loginfo);
+		//mpt3sas_trigger_mpi(ioc, ioc_status, loginfo);
 	}
 }
 
@@ -8785,13 +8785,13 @@ mpt3sas_base_hard_reset_handler(struct MPT3SAS_ADAPTER *ioc,
 	mpt3sas_base_resume_mq_polling(ioc);
 
  out_unlocked:
-	if ((r == 0) && is_trigger) {
-		if (is_fault)
-			mpt3sas_trigger_master(ioc, MASTER_TRIGGER_FW_FAULT);
-		else
-			mpt3sas_trigger_master(ioc,
-			    MASTER_TRIGGER_ADAPTER_RESET);
-	}
+	// if ((r == 0) && is_trigger) {
+	// 	if (is_fault)
+	// 		mpt3sas_trigger_master(ioc, MASTER_TRIGGER_FW_FAULT);
+	// 	else
+	// 		mpt3sas_trigger_master(ioc,
+	// 		    MASTER_TRIGGER_ADAPTER_RESET);
+	// }
 	dtmprintk(ioc, ioc_info(ioc, "%s: exit\n", __func__));
 	return r;
 }
