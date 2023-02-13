@@ -1527,17 +1527,17 @@ _scsih_raid_device_add(struct MPT3SAS_ADAPTER *ioc,
  * @raid_device: raid_device object
  *
  */
-static void
-_scsih_raid_device_remove(struct MPT3SAS_ADAPTER *ioc,
-	struct _raid_device *raid_device)
-{
-	unsigned long flags;
+// static void
+// _scsih_raid_device_remove(struct MPT3SAS_ADAPTER *ioc,
+// 	struct _raid_device *raid_device)
+// {
+// 	unsigned long flags;
 
-	spin_lock_irqsave(&ioc->raid_device_lock, flags);
-	list_del(&raid_device->list);
-	kfree(raid_device);
-	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
-}
+// 	spin_lock_irqsave(&ioc->raid_device_lock, flags);
+// 	list_del(&raid_device->list);
+// 	kfree(raid_device);
+// 	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
+// }
 
 /**
  * mpt3sas_scsih_expander_find_by_handle - expander device search
@@ -8947,53 +8947,53 @@ _scsih_reprobe_lun(struct scsi_device *sdev, void *no_uld_attach)
  * @element: IR config element data
  * Context: user.
  */
-static void
-_scsih_sas_volume_add(struct MPT3SAS_ADAPTER *ioc,
-	Mpi2EventIrConfigElement_t *element)
-{
-	struct _raid_device *raid_device;
-	unsigned long flags;
-	u64 wwid;
-	u16 handle = le16_to_cpu(element->VolDevHandle);
-	int rc;
+// static void
+// _scsih_sas_volume_add(struct MPT3SAS_ADAPTER *ioc,
+// 	Mpi2EventIrConfigElement_t *element)
+// {
+// 	struct _raid_device *raid_device;
+// 	unsigned long flags;
+// 	u64 wwid;
+// 	u16 handle = le16_to_cpu(element->VolDevHandle);
+// 	int rc;
 
-	mpt3sas_config_get_volume_wwid(ioc, handle, &wwid);
-	if (!wwid) {
-		ioc_err(ioc, "failure at %s:%d/%s()!\n",
-			__FILE__, __LINE__, __func__);
-		return;
-	}
+// 	mpt3sas_config_get_volume_wwid(ioc, handle, &wwid);
+// 	if (!wwid) {
+// 		ioc_err(ioc, "failure at %s:%d/%s()!\n",
+// 			__FILE__, __LINE__, __func__);
+// 		return;
+// 	}
 
-	spin_lock_irqsave(&ioc->raid_device_lock, flags);
-	raid_device = _scsih_raid_device_find_by_wwid(ioc, wwid);
-	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
+// 	spin_lock_irqsave(&ioc->raid_device_lock, flags);
+// 	raid_device = _scsih_raid_device_find_by_wwid(ioc, wwid);
+// 	spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
 
-	if (raid_device)
-		return;
+// 	if (raid_device)
+// 		return;
 
-	raid_device = kzalloc(sizeof(struct _raid_device), GFP_KERNEL);
-	if (!raid_device) {
-		ioc_err(ioc, "failure at %s:%d/%s()!\n",
-			__FILE__, __LINE__, __func__);
-		return;
-	}
+// 	raid_device = kzalloc(sizeof(struct _raid_device), GFP_KERNEL);
+// 	if (!raid_device) {
+// 		ioc_err(ioc, "failure at %s:%d/%s()!\n",
+// 			__FILE__, __LINE__, __func__);
+// 		return;
+// 	}
 
-	raid_device->id = ioc->sas_id++;
-	raid_device->channel = RAID_CHANNEL;
-	raid_device->handle = handle;
-	raid_device->wwid = wwid;
-	_scsih_raid_device_add(ioc, raid_device);
-	if (!ioc->wait_for_discovery_to_complete) {
-		rc = scsi_add_device(ioc->shost, RAID_CHANNEL,
-		    raid_device->id, 0);
-		if (rc)
-			_scsih_raid_device_remove(ioc, raid_device);
-	} else {
-		spin_lock_irqsave(&ioc->raid_device_lock, flags);
-//		_scsih_determine_boot_device(ioc, raid_device, 1);
-		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
-	}
-}
+// 	raid_device->id = ioc->sas_id++;
+// 	raid_device->channel = RAID_CHANNEL;
+// 	raid_device->handle = handle;
+// 	raid_device->wwid = wwid;
+// 	_scsih_raid_device_add(ioc, raid_device);
+// 	if (!ioc->wait_for_discovery_to_complete) {
+// 		rc = scsi_add_device(ioc->shost, RAID_CHANNEL,
+// 		    raid_device->id, 0);
+// 		if (rc)
+// 		//	_scsih_raid_device_remove(ioc, raid_device);
+// 	} else {
+// 		spin_lock_irqsave(&ioc->raid_device_lock, flags);
+// //		_scsih_determine_boot_device(ioc, raid_device, 1);
+// 		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
+// 	}
+// }
 
 /**
  * _scsih_sas_volume_delete - delete volume
@@ -9304,7 +9304,7 @@ _scsih_sas_ir_config_change_event(struct MPT3SAS_ADAPTER *ioc,
 		case MPI2_EVENT_IR_CHANGE_RC_VOLUME_CREATED:
 		case MPI2_EVENT_IR_CHANGE_RC_ADDED:
 			if (!foreign_config)
-				_scsih_sas_volume_add(ioc, element);
+			//	_scsih_sas_volume_add(ioc, element);
 			break;
 		case MPI2_EVENT_IR_CHANGE_RC_VOLUME_DELETED:
 		case MPI2_EVENT_IR_CHANGE_RC_REMOVED:
@@ -9338,80 +9338,80 @@ _scsih_sas_ir_config_change_event(struct MPT3SAS_ADAPTER *ioc,
  * @fw_event: The fw_event_work object
  * Context: user.
  */
-static void
-_scsih_sas_ir_volume_event(struct MPT3SAS_ADAPTER *ioc,
-	struct fw_event_work *fw_event)
-{
-	u64 wwid;
-	unsigned long flags;
-	struct _raid_device *raid_device;
-	u16 handle;
-	u32 state;
-	int rc;
-	Mpi2EventDataIrVolume_t *event_data =
-		(Mpi2EventDataIrVolume_t *) fw_event->event_data;
+// static void
+// _scsih_sas_ir_volume_event(struct MPT3SAS_ADAPTER *ioc,
+// 	struct fw_event_work *fw_event)
+// {
+// 	u64 wwid;
+// 	unsigned long flags;
+// 	struct _raid_device *raid_device;
+// 	u16 handle;
+// 	u32 state;
+// 	int rc;
+// 	Mpi2EventDataIrVolume_t *event_data =
+// 		(Mpi2EventDataIrVolume_t *) fw_event->event_data;
 
-	if (ioc->shost_recovery)
-		return;
+// 	if (ioc->shost_recovery)
+// 		return;
 
-	if (event_data->ReasonCode != MPI2_EVENT_IR_VOLUME_RC_STATE_CHANGED)
-		return;
+// 	if (event_data->ReasonCode != MPI2_EVENT_IR_VOLUME_RC_STATE_CHANGED)
+// 		return;
 
-	handle = le16_to_cpu(event_data->VolDevHandle);
-	state = le32_to_cpu(event_data->NewValue);
-	if (!ioc->hide_ir_msg)
-		dewtprintk(ioc,
-			   ioc_info(ioc, "%s: handle(0x%04x), old(0x%08x), new(0x%08x)\n",
-				    __func__, handle,
-				    le32_to_cpu(event_data->PreviousValue),
-				    state));
-	switch (state) {
-	case MPI2_RAID_VOL_STATE_MISSING:
-	case MPI2_RAID_VOL_STATE_FAILED:
-		_scsih_sas_volume_delete(ioc, handle);
-		break;
+// 	handle = le16_to_cpu(event_data->VolDevHandle);
+// 	state = le32_to_cpu(event_data->NewValue);
+// 	if (!ioc->hide_ir_msg)
+// 		dewtprintk(ioc,
+// 			   ioc_info(ioc, "%s: handle(0x%04x), old(0x%08x), new(0x%08x)\n",
+// 				    __func__, handle,
+// 				    le32_to_cpu(event_data->PreviousValue),
+// 				    state));
+// 	switch (state) {
+// 	case MPI2_RAID_VOL_STATE_MISSING:
+// 	case MPI2_RAID_VOL_STATE_FAILED:
+// 		_scsih_sas_volume_delete(ioc, handle);
+// 		break;
 
-	case MPI2_RAID_VOL_STATE_ONLINE:
-	case MPI2_RAID_VOL_STATE_DEGRADED:
-	case MPI2_RAID_VOL_STATE_OPTIMAL:
+// 	case MPI2_RAID_VOL_STATE_ONLINE:
+// 	case MPI2_RAID_VOL_STATE_DEGRADED:
+// 	case MPI2_RAID_VOL_STATE_OPTIMAL:
 
-		spin_lock_irqsave(&ioc->raid_device_lock, flags);
-	//	raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
-		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
+// 		spin_lock_irqsave(&ioc->raid_device_lock, flags);
+// 	//	raid_device = mpt3sas_raid_device_find_by_handle(ioc, handle);
+// 		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
 
-		if (raid_device)
-			break;
+// 		if (raid_device)
+// 			break;
 
-		mpt3sas_config_get_volume_wwid(ioc, handle, &wwid);
-		if (!wwid) {
-			ioc_err(ioc, "failure at %s:%d/%s()!\n",
-				__FILE__, __LINE__, __func__);
-			break;
-		}
+// 		mpt3sas_config_get_volume_wwid(ioc, handle, &wwid);
+// 		if (!wwid) {
+// 			ioc_err(ioc, "failure at %s:%d/%s()!\n",
+// 				__FILE__, __LINE__, __func__);
+// 			break;
+// 		}
 
-		raid_device = kzalloc(sizeof(struct _raid_device), GFP_KERNEL);
-		if (!raid_device) {
-			ioc_err(ioc, "failure at %s:%d/%s()!\n",
-				__FILE__, __LINE__, __func__);
-			break;
-		}
+// 		raid_device = kzalloc(sizeof(struct _raid_device), GFP_KERNEL);
+// 		if (!raid_device) {
+// 			ioc_err(ioc, "failure at %s:%d/%s()!\n",
+// 				__FILE__, __LINE__, __func__);
+// 			break;
+// 		}
 
-		raid_device->id = ioc->sas_id++;
-		raid_device->channel = RAID_CHANNEL;
-		raid_device->handle = handle;
-		raid_device->wwid = wwid;
-		_scsih_raid_device_add(ioc, raid_device);
-		rc = scsi_add_device(ioc->shost, RAID_CHANNEL,
-		    raid_device->id, 0);
-		if (rc)
-			_scsih_raid_device_remove(ioc, raid_device);
-		break;
+// 		raid_device->id = ioc->sas_id++;
+// 		raid_device->channel = RAID_CHANNEL;
+// 		raid_device->handle = handle;
+// 		raid_device->wwid = wwid;
+// 		_scsih_raid_device_add(ioc, raid_device);
+// 		rc = scsi_add_device(ioc->shost, RAID_CHANNEL,
+// 		    raid_device->id, 0);
+// 		if (rc)
+// 		//	_scsih_raid_device_remove(ioc, raid_device);
+// 		break;
 
-	case MPI2_RAID_VOL_STATE_INITIALIZING:
-	default:
-		break;
-	}
-}
+// 	case MPI2_RAID_VOL_STATE_INITIALIZING:
+// 	default:
+// 		break;
+// 	}
+// }
 
 /**
  * _scsih_sas_ir_physical_disk_event - PD event
@@ -10478,7 +10478,7 @@ _scsih_scan_for_devices_after_reset(struct MPT3SAS_ADAPTER *ioc)
 			element.VolDevHandle = volume_pg1->DevHandle;
 			ioc_info(ioc, "\tBEFORE adding volume: handle (0x%04x)\n",
 				 volume_pg1->DevHandle);
-			_scsih_sas_volume_add(ioc, &element);
+			//_scsih_sas_volume_add(ioc, &element);
 			ioc_info(ioc, "\tAFTER adding volume: handle (0x%04x)\n",
 				 volume_pg1->DevHandle);
 		}
@@ -10735,7 +10735,7 @@ _mpt3sas_fw_work(struct MPT3SAS_ADAPTER *ioc, struct fw_event_work *fw_event)
 		_scsih_sas_ir_config_change_event(ioc, fw_event);
 		break;
 	case MPI2_EVENT_IR_VOLUME:
-		_scsih_sas_ir_volume_event(ioc, fw_event);
+	//	_scsih_sas_ir_volume_event(ioc, fw_event);
 		break;
 	case MPI2_EVENT_IR_PHYSICAL_DISK:
 		_scsih_sas_ir_physical_disk_event(ioc, fw_event);
@@ -11230,18 +11230,18 @@ static void scsih_remove(struct pci_dev *pdev)
 	_scsih_ir_shutdown(ioc);
 	mpt3sas_destroy_debugfs(ioc);
 	sas_remove_host(shost);
-	list_for_each_entry_safe(raid_device, next, &ioc->raid_device_list,
-	    list) {
-		if (raid_device->starget) {
-			sas_target_priv_data =
-			    raid_device->starget->hostdata;
-			sas_target_priv_data->deleted = 1;
-			scsi_remove_target(&raid_device->starget->dev);
-		}
-		ioc_info(ioc, "removing handle(0x%04x), wwid(0x%016llx)\n",
-			 raid_device->handle, (u64)raid_device->wwid);
-		_scsih_raid_device_remove(ioc, raid_device);
-	}
+	// list_for_each_entry_safe(raid_device, next, &ioc->raid_device_list,
+	//     list) {
+	// 	if (raid_device->starget) {
+	// 		sas_target_priv_data =
+	// 		    raid_device->starget->hostdata;
+	// 		sas_target_priv_data->deleted = 1;
+	// 		scsi_remove_target(&raid_device->starget->dev);
+	// 	}
+	// 	ioc_info(ioc, "removing handle(0x%04x), wwid(0x%016llx)\n",
+	// 		 raid_device->handle, (u64)raid_device->wwid);
+	// 	_scsih_raid_device_remove(ioc, raid_device);
+	// }
 	list_for_each_entry_safe(pcie_device, pcienext, &ioc->pcie_device_list,
 		list) {
 		_scsih_pcie_device_remove_from_sml(ioc, pcie_device);
