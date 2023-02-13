@@ -1,1 +1,0 @@
-cmd_/home/loquat/workspace/mpt3sas/mpt3sas_1.ko := ld -r  -m elf_x86_64 -z noexecstack   --build-id=sha1  -T scripts/module.lds -o /home/loquat/workspace/mpt3sas/mpt3sas_1.ko /home/loquat/workspace/mpt3sas/mpt3sas_1.o /home/loquat/workspace/mpt3sas/mpt3sas_1.mod.o;  true

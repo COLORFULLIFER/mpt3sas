@@ -1,1 +1,0 @@
-cmd_/home/loquat/workspace/mpt3sas/Module.symvers := sed 's/\.ko$$/\.o/' /home/loquat/workspace/mpt3sas/modules.order | scripts/mod/modpost -m -a  -o /home/loquat/workspace/mpt3sas/Module.symvers -e -i Module.symvers   -T -
