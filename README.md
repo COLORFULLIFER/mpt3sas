@@ -8,3 +8,4 @@ scsih.c
 PS：
     ctl.c
     杂项设备（misc device），一种特殊的字符设备，这个文件基本都是关于此设备的。
+    test
