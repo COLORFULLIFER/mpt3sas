@@ -334,12 +334,12 @@ module_param_call(logging_level, _scsih_set_debug_level, param_get_int,
  *
  * Return: 1 when there's a match, 0 means no match.
  */
-static inline int
-_scsih_srch_boot_sas_address(u64 sas_address,
-	Mpi2BootDeviceSasWwid_t *boot_device)
-{
-	return (sas_address == le64_to_cpu(boot_device->SASAddress)) ?  1 : 0;
-}
+// static inline int
+// _scsih_srch_boot_sas_address(u64 sas_address,
+// 	Mpi2BootDeviceSasWwid_t *boot_device)
+// {
+// 	return (sas_address == le64_to_cpu(boot_device->SASAddress)) ?  1 : 0;
+// }
 
 /**
  * _scsih_srch_boot_device_name - search based on device name
@@ -348,12 +348,12 @@ _scsih_srch_boot_sas_address(u64 sas_address,
  *
  * Return: 1 when there's a match, 0 means no match.
  */
-static inline int
-_scsih_srch_boot_device_name(u64 device_name,
-	Mpi2BootDeviceDeviceName_t *boot_device)
-{
-	return (device_name == le64_to_cpu(boot_device->DeviceName)) ? 1 : 0;
-}
+// static inline int
+// _scsih_srch_boot_device_name(u64 device_name,
+// 	Mpi2BootDeviceDeviceName_t *boot_device)
+// {
+// 	return (device_name == le64_to_cpu(boot_device->DeviceName)) ? 1 : 0;
+// }
 
 /**
  * _scsih_srch_boot_encl_slot - search based on enclosure_logical_id/slot
@@ -363,14 +363,14 @@ _scsih_srch_boot_device_name(u64 device_name,
  *
  * Return: 1 when there's a match, 0 means no match.
  */
-static inline int
-_scsih_srch_boot_encl_slot(u64 enclosure_logical_id, u16 slot_number,
-	Mpi2BootDeviceEnclosureSlot_t *boot_device)
-{
-	return (enclosure_logical_id == le64_to_cpu(boot_device->
-	    EnclosureLogicalID) && slot_number == le16_to_cpu(boot_device->
-	    SlotNumber)) ? 1 : 0;
-}
+// static inline int
+// _scsih_srch_boot_encl_slot(u64 enclosure_logical_id, u16 slot_number,
+// 	Mpi2BootDeviceEnclosureSlot_t *boot_device)
+// {
+// 	return (enclosure_logical_id == le64_to_cpu(boot_device->
+// 	    EnclosureLogicalID) && slot_number == le16_to_cpu(boot_device->
+// 	    SlotNumber)) ? 1 : 0;
+// }
 
 /**
  * mpt3sas_get_port_by_id - get hba port entry corresponding to provided
@@ -464,39 +464,39 @@ mpt3sas_get_vphy_by_phy(struct MPT3SAS_ADAPTER *ioc,
  *
  * Return: 1 when there's a match, 0 means no match.
  */
-static int
-_scsih_is_boot_device(u64 sas_address, u64 device_name,
-	u64 enclosure_logical_id, u16 slot, u8 form,
-	Mpi2BiosPage2BootDevice_t *boot_device)
-{
-	int rc = 0;
+// static int
+// _scsih_is_boot_device(u64 sas_address, u64 device_name,
+// 	u64 enclosure_logical_id, u16 slot, u8 form,
+// 	Mpi2BiosPage2BootDevice_t *boot_device)
+// {
+// 	int rc = 0;
 
-	switch (form) {
-	case MPI2_BIOSPAGE2_FORM_SAS_WWID:
-		if (!sas_address)
-			break;
-		rc = _scsih_srch_boot_sas_address(
-		    sas_address, &boot_device->SasWwid);
-		break;
-	case MPI2_BIOSPAGE2_FORM_ENCLOSURE_SLOT:
-		if (!enclosure_logical_id)
-			break;
-		rc = _scsih_srch_boot_encl_slot(
-		    enclosure_logical_id,
-		    slot, &boot_device->EnclosureSlot);
-		break;
-	case MPI2_BIOSPAGE2_FORM_DEVICE_NAME:
-		if (!device_name)
-			break;
-		rc = _scsih_srch_boot_device_name(
-		    device_name, &boot_device->DeviceName);
-		break;
-	case MPI2_BIOSPAGE2_FORM_NO_DEVICE_SPECIFIED:
-		break;
-	}
+// 	switch (form) {
+// 	case MPI2_BIOSPAGE2_FORM_SAS_WWID:
+// 		if (!sas_address)
+// 			break;
+// 		rc = _scsih_srch_boot_sas_address(
+// 		    sas_address, &boot_device->SasWwid);
+// 		break;
+// 	case MPI2_BIOSPAGE2_FORM_ENCLOSURE_SLOT:
+// 		if (!enclosure_logical_id)
+// 			break;
+// 		rc = _scsih_srch_boot_encl_slot(
+// 		    enclosure_logical_id,
+// 		    slot, &boot_device->EnclosureSlot);
+// 		break;
+// 	case MPI2_BIOSPAGE2_FORM_DEVICE_NAME:
+// 		if (!device_name)
+// 			break;
+// 		rc = _scsih_srch_boot_device_name(
+// 		    device_name, &boot_device->DeviceName);
+// 		break;
+// 	case MPI2_BIOSPAGE2_FORM_NO_DEVICE_SPECIFIED:
+// 		break;
+// 	}
 
-	return rc;
-}
+// 	return rc;
+// }
 
 /**
  * _scsih_get_sas_address - set the sas_address for given device handle
@@ -560,88 +560,88 @@ _scsih_get_sas_address(struct MPT3SAS_ADAPTER *ioc, u16 handle,
  * the corresponding device object.
  * The saved data to be used later in _scsih_probe_boot_devices().
  */
-static void
-_scsih_determine_boot_device(struct MPT3SAS_ADAPTER *ioc, void *device,
-	u32 channel)
-{
-	struct _sas_device *sas_device;
-	struct _pcie_device *pcie_device;
-	struct _raid_device *raid_device;
-	u64 sas_address;
-	u64 device_name;
-	u64 enclosure_logical_id;
-	u16 slot;
+// static void
+// _scsih_determine_boot_device(struct MPT3SAS_ADAPTER *ioc, void *device,
+// 	u32 channel)
+// {
+// 	struct _sas_device *sas_device;
+// 	struct _pcie_device *pcie_device;
+// 	struct _raid_device *raid_device;
+// 	u64 sas_address;
+// 	u64 device_name;
+// 	u64 enclosure_logical_id;
+// 	u16 slot;
 
-	 /* only process this function when driver loads */
-	if (!ioc->is_driver_loading)
-		return;
+// 	 /* only process this function when driver loads */
+// 	if (!ioc->is_driver_loading)
+// 		return;
 
-	 /* no Bios, return immediately */
-	if (!ioc->bios_pg3.BiosVersion)
-		return;
+// 	 /* no Bios, return immediately */
+// 	if (!ioc->bios_pg3.BiosVersion)
+// 		return;
 
-	if (channel == RAID_CHANNEL) {
-		raid_device = device;
-		sas_address = raid_device->wwid;
-		device_name = 0;
-		enclosure_logical_id = 0;
-		slot = 0;
-	} else if (channel == PCIE_CHANNEL) {
-		pcie_device = device;
-		sas_address = pcie_device->wwid;
-		device_name = 0;
-		enclosure_logical_id = 0;
-		slot = 0;
-	} else {
-		sas_device = device;
-		sas_address = sas_device->sas_address;
-		device_name = sas_device->device_name;
-		enclosure_logical_id = sas_device->enclosure_logical_id;
-		slot = sas_device->slot;
-	}
+// 	if (channel == RAID_CHANNEL) {
+// 		raid_device = device;
+// 		sas_address = raid_device->wwid;
+// 		device_name = 0;
+// 		enclosure_logical_id = 0;
+// 		slot = 0;
+// 	} else if (channel == PCIE_CHANNEL) {
+// 		pcie_device = device;
+// 		sas_address = pcie_device->wwid;
+// 		device_name = 0;
+// 		enclosure_logical_id = 0;
+// 		slot = 0;
+// 	} else {
+// 		sas_device = device;
+// 		sas_address = sas_device->sas_address;
+// 		device_name = sas_device->device_name;
+// 		enclosure_logical_id = sas_device->enclosure_logical_id;
+// 		slot = sas_device->slot;
+// 	}
 
-	if (!ioc->req_boot_device.device) {
-		if (_scsih_is_boot_device(sas_address, device_name,
-		    enclosure_logical_id, slot,
-		    (ioc->bios_pg2.ReqBootDeviceForm &
-		    MPI2_BIOSPAGE2_FORM_MASK),
-		    &ioc->bios_pg2.RequestedBootDevice)) {
-			dinitprintk(ioc,
-				    ioc_info(ioc, "%s: req_boot_device(0x%016llx)\n",
-					     __func__, (u64)sas_address));
-			ioc->req_boot_device.device = device;
-			ioc->req_boot_device.channel = channel;
-		}
-	}
+// 	if (!ioc->req_boot_device.device) {
+// 		if (_scsih_is_boot_device(sas_address, device_name,
+// 		    enclosure_logical_id, slot,
+// 		    (ioc->bios_pg2.ReqBootDeviceForm &
+// 		    MPI2_BIOSPAGE2_FORM_MASK),
+// 		    &ioc->bios_pg2.RequestedBootDevice)) {
+// 			dinitprintk(ioc,
+// 				    ioc_info(ioc, "%s: req_boot_device(0x%016llx)\n",
+// 					     __func__, (u64)sas_address));
+// 			ioc->req_boot_device.device = device;
+// 			ioc->req_boot_device.channel = channel;
+// 		}
+// 	}
 
-	if (!ioc->req_alt_boot_device.device) {
-		if (_scsih_is_boot_device(sas_address, device_name,
-		    enclosure_logical_id, slot,
-		    (ioc->bios_pg2.ReqAltBootDeviceForm &
-		    MPI2_BIOSPAGE2_FORM_MASK),
-		    &ioc->bios_pg2.RequestedAltBootDevice)) {
-			dinitprintk(ioc,
-				    ioc_info(ioc, "%s: req_alt_boot_device(0x%016llx)\n",
-					     __func__, (u64)sas_address));
-			ioc->req_alt_boot_device.device = device;
-			ioc->req_alt_boot_device.channel = channel;
-		}
-	}
+// 	if (!ioc->req_alt_boot_device.device) {
+// 		if (_scsih_is_boot_device(sas_address, device_name,
+// 		    enclosure_logical_id, slot,
+// 		    (ioc->bios_pg2.ReqAltBootDeviceForm &
+// 		    MPI2_BIOSPAGE2_FORM_MASK),
+// 		    &ioc->bios_pg2.RequestedAltBootDevice)) {
+// 			dinitprintk(ioc,
+// 				    ioc_info(ioc, "%s: req_alt_boot_device(0x%016llx)\n",
+// 					     __func__, (u64)sas_address));
+// 			ioc->req_alt_boot_device.device = device;
+// 			ioc->req_alt_boot_device.channel = channel;
+// 		}
+// 	}
 
-	if (!ioc->current_boot_device.device) {
-		if (_scsih_is_boot_device(sas_address, device_name,
-		    enclosure_logical_id, slot,
-		    (ioc->bios_pg2.CurrentBootDeviceForm &
-		    MPI2_BIOSPAGE2_FORM_MASK),
-		    &ioc->bios_pg2.CurrentBootDevice)) {
-			dinitprintk(ioc,
-				    ioc_info(ioc, "%s: current_boot_device(0x%016llx)\n",
-					     __func__, (u64)sas_address));
-			ioc->current_boot_device.device = device;
-			ioc->current_boot_device.channel = channel;
-		}
-	}
-}
+// 	if (!ioc->current_boot_device.device) {
+// 		if (_scsih_is_boot_device(sas_address, device_name,
+// 		    enclosure_logical_id, slot,
+// 		    (ioc->bios_pg2.CurrentBootDeviceForm &
+// 		    MPI2_BIOSPAGE2_FORM_MASK),
+// 		    &ioc->bios_pg2.CurrentBootDevice)) {
+// 			dinitprintk(ioc,
+// 				    ioc_info(ioc, "%s: current_boot_device(0x%016llx)\n",
+// 					     __func__, (u64)sas_address));
+// 			ioc->current_boot_device.device = device;
+// 			ioc->current_boot_device.channel = channel;
+// 		}
+// 	}
+// }
 
 static struct _sas_device *
 __mpt3sas_get_sdev_from_target(struct MPT3SAS_ADAPTER *ioc,
@@ -1087,7 +1087,7 @@ _scsih_sas_device_init_add(struct MPT3SAS_ADAPTER *ioc,
 	spin_lock_irqsave(&ioc->sas_device_lock, flags);
 	sas_device_get(sas_device);
 	list_add_tail(&sas_device->list, &ioc->sas_device_init_list);
-	_scsih_determine_boot_device(ioc, sas_device, 0);
+//	_scsih_determine_boot_device(ioc, sas_device, 0);
 	spin_unlock_irqrestore(&ioc->sas_device_lock, flags);
 }
 
@@ -1416,7 +1416,7 @@ _scsih_pcie_device_init_add(struct MPT3SAS_ADAPTER *ioc,
 	list_add_tail(&pcie_device->list, &ioc->pcie_device_init_list);
 	if (pcie_device->access_status !=
 	    MPI26_PCIEDEV0_ASTATUS_DEVICE_BLOCKED)
-		_scsih_determine_boot_device(ioc, pcie_device, PCIE_CHANNEL);
+//		_scsih_determine_boot_device(ioc, pcie_device, PCIE_CHANNEL);
 	spin_unlock_irqrestore(&ioc->pcie_device_lock, flags);
 }
 // /**
@@ -8990,7 +8990,7 @@ _scsih_sas_volume_add(struct MPT3SAS_ADAPTER *ioc,
 			_scsih_raid_device_remove(ioc, raid_device);
 	} else {
 		spin_lock_irqsave(&ioc->raid_device_lock, flags);
-		_scsih_determine_boot_device(ioc, raid_device, 1);
+//		_scsih_determine_boot_device(ioc, raid_device, 1);
 		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
 	}
 }
@@ -11344,106 +11344,106 @@ scsih_shutdown(struct pci_dev *pdev)
  * device scsi-ml or sas transport for persistent boot device
  * purposes.  Please refer to function _scsih_determine_boot_device()
  */
-static void
-_scsih_probe_boot_devices(struct MPT3SAS_ADAPTER *ioc)
-{
-	u32 channel;
-	void *device;
-	struct _sas_device *sas_device;
-	struct _raid_device *raid_device;
-	struct _pcie_device *pcie_device;
-	u16 handle;
-	u64 sas_address_parent;
-	u64 sas_address;
-	unsigned long flags;
-	int rc;
-	int tid;
-	struct hba_port *port;
+// static void
+// _scsih_probe_boot_devices(struct MPT3SAS_ADAPTER *ioc)
+// {
+// 	u32 channel;
+// 	void *device;
+// 	struct _sas_device *sas_device;
+// 	struct _raid_device *raid_device;
+// 	struct _pcie_device *pcie_device;
+// 	u16 handle;
+// 	u64 sas_address_parent;
+// 	u64 sas_address;
+// 	unsigned long flags;
+// 	int rc;
+// 	int tid;
+// 	struct hba_port *port;
 
-	 /* no Bios, return immediately */
-	if (!ioc->bios_pg3.BiosVersion)
-		return;
+// 	 /* no Bios, return immediately */
+// 	if (!ioc->bios_pg3.BiosVersion)
+// 		return;
 
-	device = NULL;
-	if (ioc->req_boot_device.device) {
-		device =  ioc->req_boot_device.device;
-		channel = ioc->req_boot_device.channel;
-	} else if (ioc->req_alt_boot_device.device) {
-		device =  ioc->req_alt_boot_device.device;
-		channel = ioc->req_alt_boot_device.channel;
-	} else if (ioc->current_boot_device.device) {
-		device =  ioc->current_boot_device.device;
-		channel = ioc->current_boot_device.channel;
-	}
+// 	device = NULL;
+// 	if (ioc->req_boot_device.device) {
+// 		device =  ioc->req_boot_device.device;
+// 		channel = ioc->req_boot_device.channel;
+// 	} else if (ioc->req_alt_boot_device.device) {
+// 		device =  ioc->req_alt_boot_device.device;
+// 		channel = ioc->req_alt_boot_device.channel;
+// 	} else if (ioc->current_boot_device.device) {
+// 		device =  ioc->current_boot_device.device;
+// 		channel = ioc->current_boot_device.channel;
+// 	}
 
-	if (!device)
-		return;
+// 	if (!device)
+// 		return;
 
-	if (channel == RAID_CHANNEL) {
-		raid_device = device;
-		/*
-		 * If this boot vd is already registered with SML then
-		 * no need to register it again as part of device scanning
-		 * after diag reset during driver load operation.
-		 */
-		if (raid_device->starget)
-			return;
-		rc = scsi_add_device(ioc->shost, RAID_CHANNEL,
-		    raid_device->id, 0);
-		if (rc)
-			_scsih_raid_device_remove(ioc, raid_device);
-	} else if (channel == PCIE_CHANNEL) {
-		pcie_device = device;
-		/*
-		 * If this boot NVMe device is already registered with SML then
-		 * no need to register it again as part of device scanning
-		 * after diag reset during driver load operation.
-		 */
-		if (pcie_device->starget)
-			return;
-		spin_lock_irqsave(&ioc->pcie_device_lock, flags);
-		tid = pcie_device->id;
-		list_move_tail(&pcie_device->list, &ioc->pcie_device_list);
-		spin_unlock_irqrestore(&ioc->pcie_device_lock, flags);
-		rc = scsi_add_device(ioc->shost, PCIE_CHANNEL, tid, 0);
-		if (rc)
-			_scsih_pcie_device_remove(ioc, pcie_device);
-	} else {
-		sas_device = device;
-		/*
-		 * If this boot sas/sata device is already registered with SML
-		 * then no need to register it again as part of device scanning
-		 * after diag reset during driver load operation.
-		 */
-		if (sas_device->starget)
-			return;
-		spin_lock_irqsave(&ioc->sas_device_lock, flags);
-		handle = sas_device->handle;
-		sas_address_parent = sas_device->sas_address_parent;
-		sas_address = sas_device->sas_address;
-		port = sas_device->port;
-		list_move_tail(&sas_device->list, &ioc->sas_device_list);
-		spin_unlock_irqrestore(&ioc->sas_device_lock, flags);
+// 	if (channel == RAID_CHANNEL) {
+// 		raid_device = device;
+// 		/*
+// 		 * If this boot vd is already registered with SML then
+// 		 * no need to register it again as part of device scanning
+// 		 * after diag reset during driver load operation.
+// 		 */
+// 		if (raid_device->starget)
+// 			return;
+// 		rc = scsi_add_device(ioc->shost, RAID_CHANNEL,
+// 		    raid_device->id, 0);
+// 		if (rc)
+// 			_scsih_raid_device_remove(ioc, raid_device);
+// 	} else if (channel == PCIE_CHANNEL) {
+// 		pcie_device = device;
+// 		/*
+// 		 * If this boot NVMe device is already registered with SML then
+// 		 * no need to register it again as part of device scanning
+// 		 * after diag reset during driver load operation.
+// 		 */
+// 		if (pcie_device->starget)
+// 			return;
+// 		spin_lock_irqsave(&ioc->pcie_device_lock, flags);
+// 		tid = pcie_device->id;
+// 		list_move_tail(&pcie_device->list, &ioc->pcie_device_list);
+// 		spin_unlock_irqrestore(&ioc->pcie_device_lock, flags);
+// 		rc = scsi_add_device(ioc->shost, PCIE_CHANNEL, tid, 0);
+// 		if (rc)
+// 			_scsih_pcie_device_remove(ioc, pcie_device);
+// 	} else {
+// 		sas_device = device;
+// 		/*
+// 		 * If this boot sas/sata device is already registered with SML
+// 		 * then no need to register it again as part of device scanning
+// 		 * after diag reset during driver load operation.
+// 		 */
+// 		if (sas_device->starget)
+// 			return;
+// 		spin_lock_irqsave(&ioc->sas_device_lock, flags);
+// 		handle = sas_device->handle;
+// 		sas_address_parent = sas_device->sas_address_parent;
+// 		sas_address = sas_device->sas_address;
+// 		port = sas_device->port;
+// 		list_move_tail(&sas_device->list, &ioc->sas_device_list);
+// 		spin_unlock_irqrestore(&ioc->sas_device_lock, flags);
 
-		if (ioc->hide_drives)
-			return;
+// 		if (ioc->hide_drives)
+// 			return;
 
-		if (!port)
-			return;
+// 		if (!port)
+// 			return;
 
-		if (!mpt3sas_transport_port_add(ioc, handle,
-		    sas_address_parent, port)) {
-			_scsih_sas_device_remove(ioc, sas_device);
-		} else if (!sas_device->starget) {
-			if (!ioc->is_driver_loading) {
-				mpt3sas_transport_port_remove(ioc,
-				    sas_address,
-				    sas_address_parent, port);
-				_scsih_sas_device_remove(ioc, sas_device);
-			}
-		}
-	}
-}
+// 		if (!mpt3sas_transport_port_add(ioc, handle,
+// 		    sas_address_parent, port)) {
+// 			_scsih_sas_device_remove(ioc, sas_device);
+// 		} else if (!sas_device->starget) {
+// 			if (!ioc->is_driver_loading) {
+// 				mpt3sas_transport_port_remove(ioc,
+// 				    sas_address,
+// 				    sas_address_parent, port);
+// 				_scsih_sas_device_remove(ioc, sas_device);
+// 			}
+// 		}
+// 	}
+// }
 
 // /**
 //  * _scsih_probe_raid - reporting raid volumes to scsi-ml
@@ -11667,7 +11667,7 @@ _scsih_probe_devices(struct MPT3SAS_ADAPTER *ioc)
 	if (!(ioc->facts.ProtocolFlags & MPI2_IOCFACTS_PROTOCOL_SCSI_INITIATOR))
 		return;  /* return when IOC doesn't support initiator mode */
 
-	_scsih_probe_boot_devices(ioc);
+//	_scsih_probe_boot_devices(ioc);
 
 	if (ioc->ir_firmware) {
 		volume_mapping_flags =
